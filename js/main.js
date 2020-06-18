@@ -7,6 +7,8 @@ let $dateButton = document.getElementById('date-button');
 let $telButton = document.getElementById('tel-button');
 let $searchButton = document.getElementById('search_btn');
 let $resetButton = document.getElementById('reset_btn');
+
+let $modalBody = document.getElementById('modalBody');
 let $tBody = document.getElementById('t-body');
 
 let content = '';
@@ -21,7 +23,7 @@ function fillTable(obj) {
     $tBody.innerHTML = '';
 
     for (let i = 0; i < obj.length; i++) {
-        content += `<tr>
+        content += `<tr onclick="displayMe(this)" data-toggle="modal" data-target="#modalCenter">
         <th scope="row">${i + 1}</th>
         <td>${obj[i]['first name']}</td>
         <td>${obj[i]['last name']}</td>
@@ -38,6 +40,16 @@ function fillTable(obj) {
 
 fillTable(data);
 
+function displayMe(that) {
+    console.log(that);
+    $modalBody.innerHTML = `
+    <div class="table-responsive">
+    <table class="table">
+    ${that.innerHTML}
+    </table>
+    </div>`;
+}
+
 function order(property) {
     let sorted = currentData.sort(function (a, b) {
         var x = a[property].toLowerCase();
@@ -50,8 +62,8 @@ function order(property) {
         }
         return 0;
     });
-    
-    counter%2==0 ? fillTable(sorted): fillTable(sorted.reverse());
+
+    counter % 2 == 0 ? fillTable(sorted) : fillTable(sorted.reverse());
 
     counter++;
 }
@@ -86,14 +98,14 @@ $telButton.addEventListener('click', () => {
 
 $searchButton.addEventListener('click', () => {
     let $searchVal = document.getElementById('searchVal');
-    
+
     if (!$searchVal.value) {
         return;
     } else {
         let results = data.filter(dat => {
-            return Object.keys(dat).reduce((acc, curr)=>{
-           return acc || dat[curr].toLowerCase().includes($searchVal.value);
-        }, false);
+            return Object.keys(dat).reduce((acc, curr) => {
+                return acc || dat[curr].toLowerCase().includes($searchVal.value);
+            }, false);
         });
 
         currentData = results;
@@ -103,5 +115,5 @@ $searchButton.addEventListener('click', () => {
 
 $resetButton.addEventListener('click', () => {
     currentData = data;
-    fillTable(data)
+    fillTable(data);
 });
