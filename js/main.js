@@ -5,13 +5,15 @@ let $addressButton = document.getElementById('address-button');
 let $notesButton = document.getElementById('notes-button');
 let $dateButton = document.getElementById('date-button');
 let $telButton = document.getElementById('tel-button');
-
+let $searchButton = document.getElementById('search_btn');
+let $resetButton = document.getElementById('reset_btn');
 let $tBody = document.getElementById('t-body');
 
 let content = '';
 
 let counter = 0;
 
+let currentData = data;
 
 
 function fillTable(obj) {
@@ -36,10 +38,10 @@ function fillTable(obj) {
 
 fillTable(data);
 
-$firstButton.addEventListener('click', () => {
-    let firstNameSorted = data.sort(function (a, b) {
-        var x = a['first name'].toLowerCase();
-        var y = b['first name'].toLowerCase();
+function order(property) {
+    let sorted = currentData.sort(function (a, b) {
+        var x = a[property].toLowerCase();
+        var y = b[property].toLowerCase();
         if (x < y) {
             return -1;
         }
@@ -49,117 +51,57 @@ $firstButton.addEventListener('click', () => {
         return 0;
     });
     
-    counter%2==0 ? fillTable(firstNameSorted): fillTable(firstNameSorted.reverse());
+    counter%2==0 ? fillTable(sorted): fillTable(sorted.reverse());
 
     counter++;
+}
+
+$firstButton.addEventListener('click', () => {
+    order('first name');
 });
 
 $lastButton.addEventListener('click', () => {
-    let lastNameSorted = data.sort(function (a, b) {
-        var x = a['last name'].toLowerCase();
-        var y = b['last name'].toLowerCase();
-        if (x < y) {
-            return -1;
-        }
-        if (x > y) {
-            return 1;
-        }
-        return 0;
-    });
-
-    counter%2==0 ? fillTable(lastNameSorted): fillTable(lastNameSorted.reverse());
-
-    counter++;
+    order('last name');
 });
 
 $emailButton.addEventListener('click', () => {
-    let emailSorted = data.sort(function (a, b) {
-        var x = a.email.toLowerCase();
-        var y = b.email.toLowerCase();
-        if (x < y) {
-            return -1;
-        }
-        if (x > y) {
-            return 1;
-        }
-        return 0;
-    });
-
-    counter%2==0 ? fillTable(emailSorted): fillTable(emailSorted.reverse());
-
-    counter++;
+    order('email');
 });
 
 $addressButton.addEventListener('click', () => {
-    let addressSorted = data.sort(function (a, b) {
-        var x = a.address.toLowerCase();
-        var y = b.address.toLowerCase();
-        if (x < y) {
-            return -1;
-        }
-        if (x > y) {
-            return 1;
-        }
-        return 0;
-    });
-
-    counter%2==0 ? fillTable(addressSorted): fillTable(addressSorted.reverse());
-
-    counter++;
+    order('address');
 });
 
 $notesButton.addEventListener('click', () => {
-    let notesSorted = data.sort(function (a, b) {
-        var x = a.notes.toLowerCase();
-        var y = b.notes.toLowerCase();
-        if (x < y) {
-            return -1;
-        }
-        if (x > y) {
-            return 1;
-        }
-        return 0;
-    });
-
-    counter%2==0 ? fillTable(notesSorted): fillTable(notesSorted.reverse());
-
-    counter++;
+    order('notes');
 });
 
 $dateButton.addEventListener('click', () => {
-    let dateSorted = data.sort(function (a, b) {
-        var x = a["date added"].toLowerCase();
-        var y = b["date added"].toLowerCase();
-        if (x < y) {
-            return -1;
-        }
-        if (x > y) {
-            return 1;
-        }
-        return 0;
-    });
-
-    counter%2==0 ? fillTable(dateSorted): fillTable(dateSorted.reverse());
-
-    counter++;
+    order('date added');
 });
 
 $telButton.addEventListener('click', () => {
-    let telSorted = data.sort(function (a, b) {
-        var x = a.telephone.toLowerCase();
-        var y = b.telephone.toLowerCase();
-        if (x < y) {
-            return -1;
-        }
-        if (x > y) {
-            return 1;
-        }
-        return 0;
-    });
-    
-    counter%2==0 ? fillTable(telSorted): fillTable(telSorted.reverse());
-
-    counter++;
+    order('telephone');
 });
 
+$searchButton.addEventListener('click', () => {
+    let $searchVal = document.getElementById('searchVal');
+    
+    if (!$searchVal.value) {
+        return;
+    } else {
+        let results = data.filter(dat => {
+            return Object.keys(dat).reduce((acc, curr)=>{
+           return acc || dat[curr].toLowerCase().includes($searchVal.value);
+        }, false);
+        });
 
+        currentData = results;
+        fillTable(results);
+    }
+});
+
+$resetButton.addEventListener('click', () => {
+    currentData = data;
+    fillTable(data)
+});
