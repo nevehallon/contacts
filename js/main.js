@@ -15,12 +15,21 @@ let $tBody = document.getElementById('t-body');
 let content = '';
 
 let counter = 0;
+let currentData;
 
-let currentData = data;
+if (localStorage.getItem('temp') !== null) {
+    currentData = localStorage.getItem('temp');
+    currentData = JSON.parse(currentData);
+    console.log(currentData);
+    
+} else {
+    currentData = data;
+}
+
 
 let strData = JSON.stringify(currentData);
 
-localStorage.setItem('');////stopped here
+localStorage.setItem('temp', strData);
 
 function fillTable(obj) {
     content = '';
@@ -42,7 +51,7 @@ function fillTable(obj) {
     $tBody.innerHTML = content;
 }
 
-fillTable(data); //initial fill of data to page
+fillTable(currentData); //initial fill of data to page
 
 // for disabling form submissions if there are invalid fields
 function validate() {
@@ -106,7 +115,7 @@ function addContact() {
     </div>
     <div class="form-group">
         <label for="textarea1">Notes</label>
-        <textarea class="form-control" id="textarea1" rows="3"></textarea>
+        <textarea class="form-control" id="textarea1" rows="3" required></textarea>
     </div>
   </div>
   <button id="addContactSubmit" class="btn btn-primary" type="submit">Submit form</button>
@@ -156,6 +165,8 @@ function addContact() {
             $closeButton.click();
 
             fillTable(currentData);
+
+            localStorage.setItem('temp', JSON.stringify(currentData));
         }
     });
 
@@ -222,20 +233,19 @@ $searchButton.addEventListener('click', () => { // search function
     if (!$searchVal.value) {
         return;
     } else {
-        let results = data.filter(dat => {
+        let results = currentData.filter(dat => {
             return Object.keys(dat).reduce((acc, curr) => {
                 return acc || dat[curr].toLowerCase().includes($searchVal.value);
             }, false);
         });
 
-        currentData = results;
-        fillTable(results);
+        let tempData = results;
+        fillTable(tempData);
     }
 });
 
 $resetButton.addEventListener('click', () => { //reset function
-    currentData = data;
-    fillTable(data);
+    fillTable(currentData);// fix for local storage
 });
 
 $addButton.addEventListener('click', () => {
@@ -243,7 +253,6 @@ $addButton.addEventListener('click', () => {
 });
 
 // TODO: 
-// add contact function
 // delete contact function
 // store state in local storage
 //
