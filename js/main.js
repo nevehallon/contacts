@@ -8,6 +8,7 @@ let $telButton = document.getElementById('tel-button');
 let $searchButton = document.getElementById('search_btn');
 let $resetButton = document.getElementById('reset_btn');
 let $addButton = document.getElementById('add_btn');
+let $removeButton = document.getElementById('remove_btn');
 
 let $modalBody = document.getElementById('modalBody');
 let $tBody = document.getElementById('t-body');
@@ -21,7 +22,7 @@ if (localStorage.getItem('temp') !== null) {
     currentData = localStorage.getItem('temp');
     currentData = JSON.parse(currentData);
     console.log(currentData);
-    
+
 } else {
     currentData = data;
 }
@@ -30,6 +31,8 @@ if (localStorage.getItem('temp') !== null) {
 let strData = JSON.stringify(currentData);
 
 localStorage.setItem('temp', strData);
+
+let tempData = currentData;
 
 function fillTable(obj) {
     content = '';
@@ -68,6 +71,38 @@ function validate() {
             form.classList.add('was-validated');
         }, false);
     });
+}
+
+function deleteMe(that) {
+    let index = parseInt(that.id);
+
+    currentData.splice(index, 1);
+
+    fillTable(currentData);
+
+    localStorage.setItem('temp', JSON.stringify(currentData));
+
+}
+
+function removeContact() {
+    let obj = currentData;
+    content = '';
+    $tBody.innerHTML = '';
+
+    for (let i = 0; i < obj.length; i++) {
+        content += `<tr>
+        <th scope="row">${i + 1} <button class="btn btn-danger" id="${i}" onclick="deleteMe(this)">&times;</button></th>
+        <td>${obj[i]['first name']}</td>
+        <td>${obj[i]['last name']}</td>
+        <td>${obj[i]['email']}</td>
+        <td>${obj[i]['address']}</td>
+        <td>${obj[i]['notes']}</td>
+        <td>${obj[i]['date added']}</td>
+        <td>${obj[i]['telephone']}</td>
+        </tr>`;
+    }
+
+    $tBody.innerHTML = content;
 }
 
 function addContact() {
@@ -182,7 +217,7 @@ function displayMe(that) {
 }
 
 function order(property) {
-    let sorted = currentData.sort(function (a, b) {
+    let sorted = tempData.sort(function (a, b) {
         var x = a[property].toLowerCase();
         var y = b[property].toLowerCase();
         if (x < y) {
@@ -239,17 +274,21 @@ $searchButton.addEventListener('click', () => { // search function
             }, false);
         });
 
-        let tempData = results;
+        tempData = results;
         fillTable(tempData);
     }
 });
 
 $resetButton.addEventListener('click', () => { //reset function
-    fillTable(currentData);// fix for local storage
+    fillTable(currentData); // fix for local storage
 });
 
 $addButton.addEventListener('click', () => {
     addContact();
+});
+
+$removeButton.addEventListener('click', () => {
+    removeContact();
 });
 
 // TODO: 
