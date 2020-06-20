@@ -10,9 +10,12 @@ let $resetButton = document.getElementById('reset_btn');
 let $addButton = document.getElementById('add_btn');
 let $removeButton = document.getElementById('remove_btn');
 
+let $modalLongTitle = document.getElementById('modalLongTitle');
 let $modalBody = document.getElementById('modalBody');
 let $tBody = document.getElementById('t-body');
+let $undoAlert = document.getElementById('undoAlert');
 
+let undoObj;
 let content = '';
 
 let counter = 0;
@@ -73,14 +76,59 @@ function validate() {
     });
 }
 
-function deleteMe(that) {
-    let index = parseInt(that.id);
+function undoMe(index) {
+
+    currentData.splice(index, 0, undoObj[0]);
+    $(".alert").alert('close');
+
+    fillTable(currentData);
+
+    localStorage.setItem('temp', JSON.stringify(currentData));
+}
+
+function deleteDone(index) {
+
+    let $closeButton = document.querySelector('button[data-dismiss="modal"]');
+
+
+    undoObj = currentData.splice(index, 1);
 
     currentData.splice(index, 1);
 
     fillTable(currentData);
 
     localStorage.setItem('temp', JSON.stringify(currentData));
+
+    $closeButton.click();
+
+    $undoAlert.innerHTML = `
+    <div class="alert alert-info fade show d-inline" role="alert">
+        oops!<a id="undoButton" href="#" class="alert-link" onclick="undoMe(${index})">undo delete</a>
+    </div>
+    `;
+
+    setTimeout(() => {
+        $(".alert").alert('close');
+    }, 10000);
+}
+
+function confirmDelete(index) {
+    $modalLongTitle.innerHTML = ``;
+
+    $modalBody.innerHTML = `
+    <P>Are you sure you want to delete this contact?</P>
+    <button type="button" class="btn btn-danger" onclick="deleteDone(${index})">delete</button>
+    `;
+}
+
+function deleteMe(that) {
+
+
+    let index = parseInt(that.id);
+
+    confirmDelete(index);
+
+
 
 }
 
@@ -91,7 +139,7 @@ function removeContact() {
 
     for (let i = 0; i < obj.length; i++) {
         content += `<tr>
-        <th scope="row">${i + 1} <button class="btn btn-danger" id="${i}" onclick="deleteMe(this)">&times;</button></th>
+        <th scope="row">${i + 1} <button class="btn btn-danger" id="${i}" onclick="deleteMe(this)" data-toggle="modal" data-target="#modalCenter">&times;</button></th>
         <td>${obj[i]['first name']}</td>
         <td>${obj[i]['last name']}</td>
         <td>${obj[i]['email']}</td>
@@ -106,6 +154,8 @@ function removeContact() {
 }
 
 function addContact() {
+    $modalLongTitle.innerHTML = `Contact Details`;
+
     $modalBody.innerHTML = `
     <form class="needs-validation" novalidate>
   <div class="form-row">
@@ -169,7 +219,7 @@ function addContact() {
         let $tel = document.getElementById('validationCustom04');
         let $notes = document.getElementById('textarea1');
 
-        let $closeButton = document.querySelector('button[data-dismiss="modal"]')
+        let $closeButton = document.querySelector('button[data-dismiss="modal"]');
 
         if ($firstName.value !== '' &&
             $lastName.value !== '' &&
@@ -208,6 +258,8 @@ function addContact() {
 }
 
 function displayMe(that) {
+    $modalLongTitle.innerHTML = `Contact Details`;
+
     $modalBody.innerHTML = `
     <div class="table-responsive">
     <table class="table">

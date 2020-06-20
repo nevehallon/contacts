@@ -27,6 +27,9 @@
         <button id="reset_btn" class="btn btn-primary">reset</button>
         <button id="add_btn" class="btn btn-info" data-toggle="modal" data-target="#modalCenter">add contact</button>
         <button id="remove_btn" class="btn btn-danger">remove contact</button>
+        <div id="undoAlert" class="d-inline">
+            
+        </div>
 
 
         <div id="table_responsive" class="table-responsive">
@@ -64,12 +67,12 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog"
-            aria-labelledby="modalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalLongTitle">Contact Details</h5>
+                        <h5 class="modal-title" id="modalLongTitle"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
