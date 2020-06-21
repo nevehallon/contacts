@@ -9,6 +9,7 @@ let $searchButton = document.getElementById('search_btn');
 let $resetButton = document.getElementById('reset_btn');
 let $addButton = document.getElementById('add_btn');
 let $removeButton = document.getElementById('remove_btn');
+let $closeButton = document.querySelector('button[data-dismiss="modal"]');
 
 let $modalLongTitle = document.getElementById('modalLongTitle');
 let $modalBody = document.getElementById('modalBody');
@@ -20,6 +21,10 @@ let content = '';
 
 let counter = 0;
 let currentData;
+
+let t = setTimeout(() => {
+    $(".alert").alert('close');
+}, 10000);
 
 if (localStorage.getItem('temp') !== null) {
     currentData = localStorage.getItem('temp');
@@ -88,8 +93,7 @@ function undoMe(index) {
 
 function deleteDone(index) {
 
-    let $closeButton = document.querySelector('button[data-dismiss="modal"]');
-
+    clearTimeout(t);
 
     undoObj = currentData.splice(index, 1);
 
@@ -100,16 +104,18 @@ function deleteDone(index) {
     localStorage.setItem('temp', JSON.stringify(currentData));
 
     $closeButton.click();
-
+    
+    t = setTimeout(() => {
+        $(".alert").alert('close');
+    }, 10000);
+    
     $undoAlert.innerHTML = `
     <div class="alert alert-info fade show d-inline" role="alert">
         oops!<a id="undoButton" href="#" class="alert-link" onclick="undoMe(${index})">undo delete</a>
     </div>
     `;
 
-    setTimeout(() => {
-        $(".alert").alert('close');
-    }, 10000);
+
 }
 
 function confirmDelete(index) {
@@ -219,7 +225,6 @@ function addContact() {
         let $tel = document.getElementById('validationCustom04');
         let $notes = document.getElementById('textarea1');
 
-        let $closeButton = document.querySelector('button[data-dismiss="modal"]');
 
         if ($firstName.value !== '' &&
             $lastName.value !== '' &&
